@@ -71,6 +71,21 @@
         #plant-list li {
             margin-bottom: 10px;
         }
+        .results-container {
+            display: flex;
+            align-items: flex-start; /* Alinear los elementos en la parte superior */
+            gap: 20px; /* Espacio entre el listado y la imagen */
+        }
+
+        .results-container ul {
+            flex: 1; /* Permite que el listado ocupe más espacio */
+        }
+
+        .side-image {
+            max-width: 150px; /* Ajusta el tamaño de la imagen */
+        height: auto;
+        }
+
     </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
@@ -90,7 +105,9 @@
     </div>
     <div id="results">
         <h2>Top 10 Plantas Cercanas</h2>
+        <div class="results-container">
         <ul id="plant-list"></ul>
+        <img src="imagen.png" alt="Ingeniero" class="side-image">
     </div>
 </div>
 
