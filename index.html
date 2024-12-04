@@ -71,9 +71,7 @@
         #plant-list li {
             margin-bottom: 10px;
         }
-        .hidden {
-            display: none; /* Oculta el elemento */
-        }
+        
 
         .results-container {
             display: flex;
@@ -109,7 +107,6 @@
         <h2>Top 10 Plantas Cercanas</h2>
         <div class="results-container">
             <ul id="plant-list"></ul>
-            <img src="imagen.png" alt="Ingeniero" class="side-image hidden">
         </div>
     </div>
     
@@ -348,7 +345,7 @@ const plantas = [
                 item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km`;
                 lista.appendChild(item);
             });
-            document.querySelector(".side-image").classList.remove("hidden");
+            
         });
     </script>
 </body>
