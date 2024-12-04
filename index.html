@@ -71,20 +71,25 @@
         #plant-list li {
             margin-bottom: 10px;
         }
+        .hidden {
+            display: none; /* Oculta el elemento */
+        }
+
         .results-container {
             display: flex;
-            align-items: flex-start; /* Alinear los elementos en la parte superior */
-            gap: 20px; /* Espacio entre el listado y la imagen */
+            align-items: center;
+            gap: 20px;
         }
 
         .results-container ul {
-            flex: 1; /* Permite que el listado ocupe más espacio */
+            flex: 1;
         }
 
         .side-image {
-            max-width: 150px; /* Ajusta el tamaño de la imagen */
-        height: auto;
+            max-width: 200px;
+            height: auto;
         }
+
 
     </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -102,14 +107,13 @@
     <div id="map"></div>
     <div id="results">
         <h2>Top 10 Plantas Cercanas</h2>
-        <ul id="plant-list"></ul>
-        </div>
-    <div id="results">
-        <h2>Top 10 Plantas Cercanas</h2>
         <div class="results-container">
-        <ul id="plant-list"></ul>
-        <img src="imagen.png" alt="Ingeniero" class="side-image">
+            <ul id="plant-list"></ul>
+            <img src="imagen.png" alt="Ingeniero" class="side-image hidden">
+        </div>
     </div>
+    
+    
 </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -344,6 +348,7 @@ const plantas = [
                 item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km`;
                 lista.appendChild(item);
             });
+            document.querySelector(".side-image").classList.remove("hidden");
         });
     </script>
 </body>
