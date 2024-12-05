@@ -328,17 +328,17 @@
             return R * c; // Distancia en kilómetros
         }
         function calcularZona(distancia) {
-            if (distancia <= 5) return "Zona 0";
-            else if (distancia > 5 && distancia <= 10) return "Zona 1";
-            else if (distancia > 10 && distancia <= 15) return "Zona 2";
-            else if (distancia > 15 && distancia <= 20) return "Zona 3";
-            else if (distancia > 20 && distancia <= 25) return "Zona 4";
-            else if (distancia > 25 && distancia <= 30) return "Zona 5";
-            else if (distancia > 30 && distancia <= 35) return "Zona 6";
-            else if (distancia > 35 && distancia <= 40) return "Zona 7";
-            else if (distancia > 40 && distancia <= 45) return "Zona 8";
-            else if (distancia > 45 && distancia <= 50) return "Zona 9";
-            else return "Zona 10";
+            if (distancia <= 5) return "(<=5 KM) Zona 0";
+            else if (distancia > 5 && distancia <= 10) return "(>5 | <=10 KM) Zona 1";
+            else if (distancia > 10 && distancia <= 15) return "(>10 | <=15 KM) Zona 2";
+            else if (distancia > 15 && distancia <= 20) return "(>15 | <=20 KM) Zona 3";
+            else if (distancia > 20 && distancia <= 25) return "(>20 | <=25 KM) Zona 4";
+            else if (distancia > 25 && distancia <= 30) return "(>25 | <=30 KM) Zona 5";
+            else if (distancia > 30 && distancia <= 35) return "(>30 | <=35 KM) Zona 6";
+            else if (distancia > 35 && distancia <= 40) return "(>35 | <=40 KM) Zona 7";
+            else if (distancia > 40 && distancia <= 45) return "(>40 | <=45 KM) Zona 8";
+            else if (distancia > 45 && distancia <= 50) return "(>45 | <=50 KM) Zona 9";
+            else return "(>50 KM) Zona 10";
         }
         // Configuración inicial del mapa
         const map = L.map("map").setView([4.0, -74.0], 6);
@@ -364,14 +364,20 @@
 
         // Evento al hacer clic en el botón
         document.getElementById("search").addEventListener("click", () => {
-            const latitud = parseFloat(document.getElementById("latitude").value);
-            const longitud = parseFloat(document.getElementById("longitude").value);
+            let latitud = parseFloat(document.getElementById("latitude").value);
+            let longitud = parseFloat(document.getElementById("longitude").value);
 
             if (isNaN(latitud) || isNaN(longitud)) {
                 alert("Por favor, ingresa coordenadas válidas.");
                 return;
             }
-
+            // Si la longitud es positiva, conviértela a negativa
+            if (longitud > 0) {
+                longitud = -longitud;
+            }
+            if (latitud < 0) {
+                latitud = -latitud;
+            }
             // Centra el mapa y limpia los marcadores
             map.setView([latitud, longitud], 8);
             map.eachLayer((layer) => {
