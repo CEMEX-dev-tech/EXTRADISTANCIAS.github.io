@@ -397,7 +397,7 @@
                 listaCemex.appendChild(item);
 
                 // Agrega los marcadores azules
-                L.marker([planta.latitud, planta.longitud], { icon: blueIcon })
+                L.marker([planta.latitud, planta.longitud], { icon: redIcon })
                     .addTo(map)
                     .bindPopup(`${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km`);
                 
