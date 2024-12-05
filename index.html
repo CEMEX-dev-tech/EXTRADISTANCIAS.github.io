@@ -316,7 +316,19 @@
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c; // Distancia en kilómetros
         }
-
+        function calcularZona(distancia) {
+            if (distancia <= 5) return "Zona 0";
+            else if (distancia > 5 && distancia <= 10) return "Zona 1";
+            else if (distancia > 10 && distancia <= 15) return "Zona 2";
+            else if (distancia > 15 && distancia <= 20) return "Zona 3";
+            else if (distancia > 20 && distancia <= 25) return "Zona 4";
+            else if (distancia > 25 && distancia <= 30) return "Zona 5";
+            else if (distancia > 30 && distancia <= 35) return "Zona 6";
+            else if (distancia > 35 && distancia <= 40) return "Zona 7";
+            else if (distancia > 40 && distancia <= 45) return "Zona 8";
+            else if (distancia > 45 && distancia <= 50) return "Zona 9";
+            else return "Zona 10";
+        }
         // Configuración inicial del mapa
         const map = L.map("map").setView([4.0, -74.0], 6);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -333,6 +345,7 @@
                 .map((planta) => ({
                     ...planta,
                     distancia: calcularDistancia(lat, lon, planta.latitud, planta.longitud),
+                    zona: calcularZona(calcularDistancia(lat, lon, planta.latitud, planta.longitud))
                 }))
                 .sort((a, b) => a.distancia - b.distancia)
                 .slice(0, 3);
@@ -378,14 +391,14 @@
                 const esCemex = planta.nombre.startsWith("CEMEX");
                 const item = document.createElement("li");
                 item.textContent = esCemex
-                    ? `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km`
-                    : `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km`;
+                    ? `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`
+                    : `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
                 lista.appendChild(item);
 
                 // Agrega los marcadores azules
                 L.marker([planta.latitud, planta.longitud], { icon: blueIcon })
                     .addTo(map)
-                    .bindPopup(`${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km`);
+                    .bindPopup(`${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`);
             });
 
             // Mostrar Top 3 de CEMEX
@@ -393,13 +406,13 @@
             listaCemex.innerHTML = "<h3>Top 3 Plantas CEMEX</h3>";
             top3Cemex.forEach((planta) => {
                 const item = document.createElement("li");
-                item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km`;
+                item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
                 listaCemex.appendChild(item);
 
                 // Agrega los marcadores azules
                 L.marker([planta.latitud, planta.longitud], { icon: redIcon })
                     .addTo(map)
-                    .bindPopup(`${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km`);
+                    .bindPopup(`${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`);
                 
             });
             lista.appendChild(listaCemex);         
