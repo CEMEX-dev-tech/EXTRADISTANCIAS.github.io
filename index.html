@@ -28,6 +28,7 @@
 
         .form-container {
             margin-bottom: 20px;
+            align-items: center;
         }
 
         input {
@@ -95,13 +96,15 @@
 <body>
     <div id="app">
     <h1>EXTRADISTANCIAS</h1>
-    <div class="form-container">
+    <div class="form-container" style="display: flex; flex-direction: column; align-items: center;">
         <label for="latitude">LAT:</label>
-        <input type="number" id="latitude" placeholder="Ingresa la latitud" step="0.0001">
+        <input type="number" id="latitude" placeholder="Ingresa la latitud" step="0.0001" style="margin-bottom: 10px;">
         <label for="longitude">LONG:</label>
-        <input type="number" id="longitude" placeholder="Ingresa la longitud" step="0.0001">
+        <input type="number" id="longitude" placeholder="Ingresa la longitud" step="0.0001" style="margin-bottom: 20px;">
         <button id="search">Buscar Plantas Cercanas</button>
-    </div>
+    </div>  
+    
+    
     <div id="map"></div>
     <div id="results">
        
