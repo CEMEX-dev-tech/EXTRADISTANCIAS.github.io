@@ -30,6 +30,31 @@
         h1 {
             font-size: 36px;
             margin-bottom: 20px;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
+                         0 0 20px rgba(255, 0, 0, 0.6), 
+                         0 0 30px rgba(0, 0, 255, 0.4);
+            animation: pulse-shadow 1s infinite; /* Anima la sombra */
+        }
+
+        @keyframes pulse-shadow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 0, 0, 0.6), 0 0 30px rgba(0, 0, 255, 0.4); }
+            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 0, 0, 0.8), 0 0 40px rgba(0, 0, 255, 0.6); }
+        }
+
+        h4 {
+            font-size: 15px;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
+                         0 0 20px rgba(255, 0, 0, 0.6), 
+                         0 0 30px rgba(0, 0, 255, 0.4);
+            animation: pulse-shadow 1s infinite; /* Anima la sombra */
+        }
+
+        @keyframes pulse-shadow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 0, 0, 0.6), 0 0 30px rgba(0, 0, 255, 0.4); }
+            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 0, 0, 0.8), 0 0 40px rgba(0, 0, 255, 0.6); }
         }
 
         .form-container {
@@ -81,7 +106,7 @@
 
         button:hover {
             background-color: #0000b3;
-            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.4); /* Aumenta la sombra al pasar el mouse */
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2); /* Aumenta la sombra al pasar el mouse */
         }
 
         #map {
@@ -96,7 +121,7 @@
         }
 
         #results {
-            background: rgba(255, 255, 255, 0.3); /* Fondo blanco con transparencia */
+            background: rgba(255, 255, 255, 0.2); /* Fondo blanco con transparencia */
             color: #ffffff;
             width: 90%;
             max-width: 400px;
@@ -147,6 +172,7 @@
             <h3>PLANTAS MAS CERCANAS</h3>
             <ul id="plant-list"></ul>
         </div>
+        <h4>© CEMEX COLOMBIA S.A</h4>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
