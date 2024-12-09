@@ -364,14 +364,26 @@
         }
 
         document.getElementById("search").addEventListener("click", () => {
-            const latitud = parseFloat(document.getElementById("latitude").value);
-            const longitud = parseFloat(document.getElementById("longitude").value);
+            let latitud = parseFloat(document.getElementById("latitude").value);
+            let longitud = parseFloat(document.getElementById("longitude").value);
+
+            // Asegura que la latitud sea positiva
+            if (latitud < 0) {
+                latitud = Math.abs(latitud);
+                document.getElementById("latitude").value = latitud; // Actualiza el valor mostrado al usuario
+            }
+
+            // Asegura que la longitud sea negativa
+            if (longitud > 0) {
+                longitud = -longitud;
+                document.getElementById("longitude").value = longitud; // Actualiza el valor mostrado al usuario
+            }
 
             if (isNaN(latitud) || isNaN(longitud)) {
                 alert("Por favor, ingresa coordenadas válidas.");
                 return;
             }
-
+            
             map.setView([latitud, longitud], 8);
             map.eachLayer((layer) => {
                 if (!layer._url) map.removeLayer(layer);
