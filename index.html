@@ -362,7 +362,21 @@
                 .slice(0, 3);
         }
 
-        // Evento al hacer clic en el botón
+// Función para agregar puntos de colores en el mapa
+function agregarMarcadorTexto(lat, lon, icono, texto) {
+    L.marker([lat, lon], {
+        icon: L.divIcon({
+            className: "custom-icon",
+            html: `<span style="font-size: 24px;">${icono}</span>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+        }),
+    })
+    .addTo(map)
+    .bindPopup(texto);
+}
+
+        // Evento al hacer clic en el botón de búsqueda
         document.getElementById("search").addEventListener("click", () => {
             let latitud = parseFloat(document.getElementById("latitude").value);
             let longitud = parseFloat(document.getElementById("longitude").value);
@@ -371,33 +385,27 @@
                 alert("Por favor, ingresa coordenadas válidas.");
                 return;
             }
-            // Si la longitud es positiva, conviértela a negativa
-            if (longitud > 0) {
-                longitud = -longitud;
-            }
-            if (latitud < 0) {
-                latitud = -latitud;
-            }
-            // Centra el mapa y limpia los marcadores
+
+            // Corrige la longitud y latitud si son incorrectas
+            if (longitud > 0) longitud = -longitud;
+            if (latitud < 0) latitud = -latitud;
+
+            // Centra el mapa y limpia los marcadores anteriores
             map.setView([latitud, longitud], 8);
             map.eachLayer((layer) => {
                 if (!layer._url) map.removeLayer(layer);
             });
+
+            // Cargar nueva capa de mapa
             L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
                 maxZoom: 18,
             }).addTo(map);
 
-            // Agrega el marcador rojo para la ubicación del usuario
-            L.marker([latitud, longitud], { icon: whiteIcon })
-                .addTo(map)
-                .bindPopup("Tu ubicación")
-                .openPopup();
+            // Marcador para la ubicación del usuario
+            agregarMarcadorTexto(latitud, longitud, "🟢", "Tu ubicación");
 
             // Obtener Top 3 de todas las plantas
             const top3General = buscarPlantasCercanas(latitud, longitud);
-
-            // Obtener Top 3 de plantas CEMEX
-            const top3Cemex = buscarPlantasCercanas(latitud, longitud, "CEMEX");
 
             // Mostrar resultados en la lista
             const lista = document.getElementById("plant-list");
@@ -405,33 +413,29 @@
 
             // Listar el Top 3 General
             top3General.forEach((planta) => {
-                const esCemex = planta.nombre.startsWith("CEMEX");
+                const icono = planta.nombre.startsWith("CEMEX") ? "🔴" : "🔵";
                 const item = document.createElement("li");
-                item.textContent = esCemex
-                    ? `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`
-                    : `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
+                item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
                 lista.appendChild(item);
 
-                // Agrega los marcadores azules
-                L.marker([planta.latitud, planta.longitud], { icon: blueIcon })
-                    .addTo(map)
-                    .bindPopup(`${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`);
+                // Agregar marcadores al mapa
+                agregarMarcadorTexto(planta.latitud, planta.longitud, icono, `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`);
             });
 
-            // Mostrar Top 3 de CEMEX
+            // Mostrar Top 3 de plantas CEMEX
+            const top3Cemex = buscarPlantasCercanas(latitud, longitud, "CEMEX");
             const listaCemex = document.createElement("ul");
             listaCemex.innerHTML = "<h3>Top 3 Plantas CEMEX</h3>";
+
             top3Cemex.forEach((planta) => {
                 const item = document.createElement("li");
                 item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
                 listaCemex.appendChild(item);
 
-                // Agrega los marcadores azules
-                L.marker([planta.latitud, planta.longitud], { icon: redIcon })
-                    .addTo(map)
-                    .bindPopup(`${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`);
-                
+                // Agregar marcadores al mapa
+                agregarMarcadorTexto(planta.latitud, planta.longitud, "🔴", `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`);
             });
+
             lista.appendChild(listaCemex);         
         });
 
