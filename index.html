@@ -420,7 +420,7 @@
                 maxZoom: 20,
             }).addTo(map);
 
-            agregarMarcadorTexto(latitud, longitud, "🟢", "Tu ubicación");
+            agregarMarcadorTexto(latitud, longitud, "👷", "Tu ubicación");
 
             const lista = document.getElementById("plant-list");
             lista.innerHTML = "";
@@ -451,7 +451,7 @@
                     item.style.textAlign = "left";
                     lista.appendChild(item);
 
-                    const icono = planta.nombre.startsWith("CEMEX") ? "🔴" : "🔵";
+                    const icono = planta.nombre.startsWith("CEMEX") ? "🔴🏭" : "🔵🏭";
                     agregarMarcadorTexto(
                         planta.latitud,
                         planta.longitud,
