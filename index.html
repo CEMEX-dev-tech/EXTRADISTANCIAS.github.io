@@ -481,7 +481,7 @@
                 item.style.textAlign = "left";
                 lista.appendChild(item);
         
-                const icono = planta.nombre.startsWith("CEMEX") ? "🔴" : "🔵";
+                const icono = planta.nombre.startsWith("CEMEX") ? "📌" : "🔵";
                 agregarMarcadorTexto(
                     planta.latitud,
                     planta.longitud,
@@ -508,7 +508,7 @@
                     agregarMarcadorTexto(
                         planta.latitud,
                         planta.longitud,
-                        "🔴",
+                        "📌",
                         `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`
                     );
                 });
