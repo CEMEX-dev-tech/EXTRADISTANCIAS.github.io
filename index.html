@@ -90,25 +90,35 @@
             box-sizing: border-box; /* Incluye padding y border en el tamaño total */
         }
 
+ 
         button {
-            width: 100%; /* Igual que los inputs */
-            padding: 15px;
-            font-size: 14px;
-            font-weight: bold;
-            background-color: #f22331;
             color: white;
+            text-decoration: none;
+            font-size: 25px;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out; /* Animación suave */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra inicial */
+            background: none;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
         }
 
-        button:hover {
-            background-color: #0000b3;
-            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2); /* Aumenta la sombra al pasar el mouse */
+        button::before {
+            margin-left: auto;
         }
 
+        button::after, button::before {
+            content: '';
+            width: 0%;
+            height: 2px;
+            background:#f22331;
+            display: block;
+            transition: 0.1s;
+        }
+
+        button:hover::after, button:hover::before {
+            width: 100%;
+        }
+
+      
         #map {
             height: 350px;
             width: 90%;
@@ -119,6 +129,7 @@
             margin-top: 2px;
             
         }
+
 
         #results {
             background: rgba(255, 255, 255, 0.2); /* Fondo blanco con transparencia */
@@ -181,8 +192,9 @@
             <label for="longitude">Longitud (Utiliza punto):</label>
             <input type="number" id="longitude" placeholder="Longitud en Colombia" step="0.0001">
 
-            <button id="search">Buscar Plantas</button>
+            <button id="search">BUSCAR PLANTAS</button>
         </div>
+               
 
         <div id="map"></div>
 
