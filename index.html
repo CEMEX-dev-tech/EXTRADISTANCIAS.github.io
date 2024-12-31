@@ -84,7 +84,7 @@
             width: 100%; /* Ocupa todo el ancho disponible */
             padding: 10px;
             margin-bottom: 15px;
-            font-size: 16px;
+            font-size: 14px;
             border: 2px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box; /* Incluye padding y border en el tamaño total */
@@ -93,7 +93,7 @@
         button {
             width: 100%; /* Igual que los inputs */
             padding: 15px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             background-color: #f22331;
             color: white;
@@ -130,6 +130,24 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
 
+        }
+
+        #cemex-results {
+            background: rgba(255, 255, 255, 0.2); /* Fondo blanco con transparencia */
+            color: #ffffff;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-top: 20px;
+
+        }
+        #cemex-plant-list {
+            list-style: none; /* Elimina los puntos de la lista */
+            padding: 0; /* Elimina el espacio interno */
+            margin: 0; /* Elimina el margen */
         }
 
         #plant-list {
@@ -169,8 +187,13 @@
         <div id="map"></div>
 
         <div id="results">
-            <h3>PLANTAS MAS CERCANAS</h3>
+            <h3>PLANTAS MÁS CERCANAS</h3>
             <ul id="plant-list"></ul>
+        </div>
+
+        <div id="cemex-results">
+            <h3>TOP 3 PLANTAS DE CEMEX MÁS CERCANAS</h3>
+            <ul id="cemex-plant-list"></ul>
         </div>
         <h4>CEMEX COLOMBIA S.A ®</h4>
     </div>
@@ -341,7 +364,8 @@
             { nombre: "CONCREMOVIL S.A.S - TUNJUELO USME", pais: "Colombia", latitud: 4.542060138, longitud: -74.12898866 },
             { nombre: "MYA GROUP CONCRETOS SAS - NORMANDÍA", pais: "Colombia", latitud: 4.678082786, longitud: -74.17271362 },
             { nombre: "MYA GROUP CONCRETOS SAS - VERGANZO", pais: "Colombia", latitud: 4.968897507, longitud: -73.96545196 },
-            { nombre: "POLIMIX - CARTAGENA", pais: "Colombia", latitud: 10.36153708, longitud: -75.50568318 }
+            { nombre: "POLIMIX - CARTAGENA", pais: "Colombia", latitud: 10.36153708, longitud: -75.50568318 },
+            { nombre: "PLANTA NUEVA XD", pais: "Colombia", latitud: 5.04625010659195 , longitud: -75.51097458604853 }
                 ];
       
 
@@ -393,73 +417,103 @@
         document.getElementById("search").addEventListener("click", () => {
             let latitud = parseFloat(document.getElementById("latitude").value);
             let longitud = parseFloat(document.getElementById("longitude").value);
-
+        
             // Asegura que la latitud sea positiva
             if (latitud < 0) {
                 latitud = Math.abs(latitud);
                 document.getElementById("latitude").value = latitud; // Actualiza el valor mostrado al usuario
             }
-
+        
             // Asegura que la longitud sea negativa
             if (longitud > 0) {
                 longitud = -longitud;
                 document.getElementById("longitude").value = longitud; // Actualiza el valor mostrado al usuario
             }
-
+        
             if (isNaN(latitud) || isNaN(longitud)) {
                 alert("Por favor, ingresa coordenadas válidas.");
                 return;
             }
-            
+        
             map.setView([latitud, longitud], 8);
             map.eachLayer((layer) => {
                 if (!layer._url) map.removeLayer(layer);
             });
-
+        
             L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
                 maxZoom: 20,
             }).addTo(map);
-
+        
             agregarMarcadorTexto(latitud, longitud, "👷", "Tu ubicación");
-
+        
+            // Contenedores de las listas
             const lista = document.getElementById("plant-list");
+            const cemexLista = document.getElementById("cemex-plant-list");
+        
             lista.innerHTML = "";
-
-            plantas
-                .map(planta => ({
-                    ...planta,
-                    distancia: calcularDistancia(latitud, longitud, planta.latitud, planta.longitud),
-                    zona: calcularZona(calcularDistancia(latitud, longitud, planta.latitud, planta.longitud))
-                }))
-                .sort((a, b) => a.distancia - b.distancia)
-                .slice(0, 3) // Solo el top 3
+            cemexLista.innerHTML = "";
+        
+            // Procesar todas las plantas
+            const plantasConDistancia = plantas.map(planta => ({
+                ...planta,
+                distancia: calcularDistancia(latitud, longitud, planta.latitud, planta.longitud),
+                zona: calcularZona(calcularDistancia(latitud, longitud, planta.latitud, planta.longitud))
+            }));
+        
+            // Ordenar por distancia
+            const plantasOrdenadas = plantasConDistancia.sort((a, b) => a.distancia - b.distancia);
+        
+            // Mostrar Top 3 general
+            plantasOrdenadas.slice(0, 3).forEach(planta => {
+                const item = document.createElement("li");
+                item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
+        
+                if (planta.nombre.startsWith("CEMEX")) {
+                    item.style.backgroundColor = "#f22331"; // Rojo para CEMEX
+                } else {
+                    item.style.backgroundColor = "#0000b3"; // Azul para otras
+                }
+        
+                item.style.color = "white";
+                item.style.borderRadius = "8px";
+                item.style.padding = "5px 10px";
+                item.style.marginBottom = "10px";
+                item.style.textAlign = "left";
+                lista.appendChild(item);
+        
+                const icono = planta.nombre.startsWith("CEMEX") ? "🔴" : "🔵";
+                agregarMarcadorTexto(
+                    planta.latitud,
+                    planta.longitud,
+                    icono,
+                    `${planta.nombre} - ${planta.distancia.toFixed(2)} km - ${planta.zona}`
+                );
+            });
+        
+            // Filtrar y mostrar Top 3 de CEMEX
+            plantasOrdenadas
+                .filter(planta => planta.nombre.startsWith("CEMEX")) // Solo plantas de CEMEX
+                .slice(0, 3)
                 .forEach(planta => {
                     const item = document.createElement("li");
-                    item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
-
-                    // Asigna color dependiendo del nombre de la planta
-                    if (planta.nombre.startsWith("CEMEX")) {
-                        item.style.backgroundColor = "#f22331"; // Rojo
-                    } else {
-                        item.style.backgroundColor = "#0000b3"; // Azul
-                    }
-
+                    item.textContent = `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
+                    item.style.backgroundColor = "#f22331"; // Rojo para CEMEX
                     item.style.color = "white";
                     item.style.borderRadius = "8px";
                     item.style.padding = "5px 10px";
                     item.style.marginBottom = "10px";
                     item.style.textAlign = "left";
-                    lista.appendChild(item);
-
-                    const icono = planta.nombre.startsWith("CEMEX") ? "🔴🏭" : "🔵🏭";
+                    cemexLista.appendChild(item);
+        
                     agregarMarcadorTexto(
                         planta.latitud,
                         planta.longitud,
-                        icono,
-                        `${planta.nombre} - ${planta.distancia.toFixed(2)} km - ${planta.zona}`
+                        "🔴",
+                        `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`
                     );
                 });
         });
+
 
     </script>
 </body>
