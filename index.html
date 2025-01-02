@@ -71,6 +71,24 @@
             flex-direction: column;
             align-items: center; /* Centra los elementos */
         }
+        .form-container2 {
+            background: rgba(255, 255, 255, 0.9); /* Fondo blanco con transparencia */
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center; /* Asegura que el contenido esté centrado horizontalmente */
+            margin-bottom: 20px;
+            color: #f22331;
+            display: flex; /* Activa el flexbox */
+            flex-direction: row; /* Elementos en fila */
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            gap: 10px; /* Espacio adicional entre los elementos */
+                   
+        }
+
 
         label {
             font-weight: 600;
@@ -200,7 +218,7 @@
 </head>
 <body>
     <div id="app">
-        <h1>EXTRADISTANCIAS</h1>
+        <h1>🌍EXTRADISTANCIAS🌍</h1>
 
         <div class="form-container">
             <label for="latitude">Latitud (Utiliza punto):</label>
@@ -214,7 +232,13 @@
             </button>
 
         </div>
-               
+
+        <div class="form-container2">
+            <label for="latitude">Tu ubicación: 🏗️</label>            
+            <label for="longitude">Jugadores: 🔵</label>
+            <label for="longitude">Cemex: 📌</label>
+           
+        </div>               
 
         <div id="map"></div>
 
