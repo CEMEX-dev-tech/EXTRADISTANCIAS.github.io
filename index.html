@@ -95,7 +95,7 @@
             padding: 1.1em 2em;
             background: none;
             border: 2px solid #DDD;
-            font-size: 15px;
+            font-size: 14px;
             color: #f22331;
             cursor: pointer;
             position: relative;
@@ -498,7 +498,7 @@
             // Mostrar Top 3 general
             plantasOrdenadas.slice(0, 3).forEach(planta => {
                 const item = document.createElement("li");
-                item.textContent = `${planta.nombre} - Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
+                item.textContent = `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`;
         
                 if (planta.nombre.startsWith("CEMEX")) {
                     item.style.backgroundColor = "#f22331"; // Rojo para CEMEX
@@ -511,6 +511,7 @@
                 item.style.padding = "5px 10px";
                 item.style.marginBottom = "10px";
                 item.style.textAlign = "left";
+                item.style.fontSize= "14px";
                 lista.appendChild(item);
         
                 const icono = planta.nombre.startsWith("CEMEX") ? "📌" : "🔵";
@@ -518,7 +519,7 @@
                     planta.latitud,
                     planta.longitud,
                     icono,
-                    `${planta.nombre} - ${planta.distancia.toFixed(2)} km - ${planta.zona}`
+                    `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`
                 );
             });
         
@@ -528,20 +529,21 @@
                 .slice(0, 3)
                 .forEach(planta => {
                     const item = document.createElement("li");
-                    item.textContent = `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`;
+                    item.textContent = `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`;
                     item.style.backgroundColor = "#f22331"; // Rojo para CEMEX
                     item.style.color = "white";
                     item.style.borderRadius = "8px";
                     item.style.padding = "5px 10px";
                     item.style.marginBottom = "10px";
                     item.style.textAlign = "left";
+                    item.style.fontSize= "14px";
                     cemexLista.appendChild(item);
         
                     agregarMarcadorTexto(
                         planta.latitud,
                         planta.longitud,
                         "📌",
-                        `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona}`
+                        `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`
                     );
                 });
         });
