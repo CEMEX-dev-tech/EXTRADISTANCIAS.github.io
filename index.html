@@ -27,14 +27,14 @@
             align-items: center;
         }
        
-        /* Spinner esfera */
+
         .spinner {
-        width: 88px;
-        height: 88px;
+        width: 50px; /* Ancho reducido */
+        height: 50px; /* Alto reducido */
         animation: spinner-y0fdc1 2s infinite ease;
         transform-style: preserve-3d;
-        margin-top: 50px;
-        margin-bottom: 50px;
+        margin-top: 20px; /* Margen superior reducido */
+        margin-bottom: 20px; /* Margen inferior reducido */
         }
 
         .spinner > div {
@@ -42,12 +42,12 @@
         height: 100%;
         position: absolute;
         width: 100%;
-        border: 5px solid #ffffff;
+        border: 2px solid #ffffff;
         border-radius: 0%; /* Redondea cada cara para formar una esfera */
         }
 
         .spinner div:nth-of-type(1) {
-        transform: translateZ(-44px) rotateY(180deg);
+        transform: translateZ(-25px) rotateY(180deg); /* Ajustado para el nuevo tamaño */
         }
 
         .spinner div:nth-of-type(2) {
@@ -71,7 +71,7 @@
         }
 
         .spinner div:nth-of-type(6) {
-        transform: translateZ(44px);
+        transform: translateZ(25px); /* Ajustado para el nuevo tamaño */
         }
 
         @keyframes spinner-y0fdc1 {
@@ -86,7 +86,7 @@
         100% {
             transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
         }
-        }
+}
 
 
 
@@ -289,7 +289,9 @@
             <div></div>
             <div></div>
             <div></div>
-        </div>       
+        </div>
+          
+
 
         <h1>EXTRADISTANCIAS</h1>
 
@@ -300,15 +302,16 @@
             <label for="longitude">Longitud (Utiliza punto):</label>
             <input type="number" id="longitude" placeholder="Longitud en Colombia" step="0.0001">
 
+            
             <button class="btn" id="search"> BUSCAR PLANTAS
             </button>
 
         </div>
 
         <div class="form-container2">
-            <label for="latitude">Tu ubicación: 🏗️</label>            
-            <label for="longitude">Jugadores: 🔵</label>
-            <label for="longitude">Cemex: 📌</label>
+            <label for="latitude">TU UBICACIÓN: 🏗️</label>            
+            <label for="longitude">JUGADORES: 🔵</label>
+            <label for="longitude">CEMEX: 📌</label>
            
         </div>               
 
