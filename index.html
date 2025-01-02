@@ -28,66 +28,69 @@
         }
        
 
-        .spinner {
-        width: 50px; /* Ancho reducido */
-        height: 50px; /* Alto reducido */
-        animation: spinner-y0fdc1 2s infinite ease;
-        transform-style: preserve-3d;
-        margin-top: 20px; /* Margen superior reducido */
-        margin-bottom: 20px; /* Margen inferior reducido */
+        /* From Uiverse.io by Gianluks90 */ 
+        .loader {
+        height: 50px;
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        margin-top: 20px;
         }
 
-        .spinner > div {
-        background-color: rgba(0, 255, 164, 0.0);
-        height: 100%;
-        position: absolute;
-        width: 100%;
-        border: 2px solid #ffffff;
-        border-radius: 0%; /* Redondea cada cara para formar una esfera */
+        .bar {
+        height: 5px;
+        width: 12px;
+        animation-duration: 0.45s;
+        animation-name: changeHeight;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
         }
 
-        .spinner div:nth-of-type(1) {
-        transform: translateZ(-25px) rotateY(180deg); /* Ajustado para el nuevo tamaño */
+        .red {
+        background-color: #f22331;
+        box-shadow: 1px 1px 10px #000000;
+        animation-delay: 0.10s;
         }
 
-        .spinner div:nth-of-type(2) {
-        transform: rotateY(-270deg) translateX(50%);
-        transform-origin: top right;
+        .orange {
+        background-color: #0000b3;
+        box-shadow: 1px 1px 10px #000000;
+        animation-delay: 0.20s;
         }
 
-        .spinner div:nth-of-type(3) {
-        transform: rotateY(270deg) translateX(-50%);
-        transform-origin: center left;
+        .yellow {
+        background-color: #ffffff;
+        box-shadow: 1px 1px 10px #000000;
+        animation-delay: 0.25s;
         }
 
-        .spinner div:nth-of-type(4) {
-        transform: rotateX(90deg) translateY(-50%);
-        transform-origin: top center;
+        .green {
+        background-color: #f22331;
+        box-shadow: 1px 1px 10px #000000;
+        animation-delay: 0.30s;
         }
 
-        .spinner div:nth-of-type(5) {
-        transform: rotateX(-90deg) translateY(50%);
-        transform-origin: bottom center;
+        .blue {
+        background-color: #0000b3;
+        box-shadow: 1px 1px 10px #000000;
+        animation-delay: 0.35s;
         }
 
-        .spinner div:nth-of-type(6) {
-        transform: translateZ(25px); /* Ajustado para el nuevo tamaño */
+        .violet {
+        background-color: #ffffff;
+        box-shadow: 1px 1px 10px #000000;
+        animation-delay: 0.40s;
         }
 
-        @keyframes spinner-y0fdc1 {
-        0% {
-            transform: rotate(45deg) rotateX(-25deg) rotateY(25deg);
+        @keyframes changeHeight {
+        from {
+            height: 5px;
         }
 
-        50% {
-            transform: rotate(45deg) rotateX(-385deg) rotateY(25deg);
+        to {
+            height: 40px;
         }
-
-        100% {
-            transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
         }
-}
-
 
 
 
@@ -282,15 +285,15 @@
      
     <div id="app">
         
-        <div class="spinner">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+       
+        <div class="loader">
+          <div class="red bar"></div>
+          <div class="orange bar"></div>
+          <div class="yellow bar"></div>
+          <div class="green bar"></div>
+          <div class="blue bar"></div>
+          <div class="violet bar"></div>
         </div>
-          
 
 
         <h1>EXTRADISTANCIAS</h1>
