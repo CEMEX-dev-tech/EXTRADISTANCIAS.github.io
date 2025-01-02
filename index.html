@@ -89,35 +89,52 @@
             border-radius: 5px;
             box-sizing: border-box; /* Incluye padding y border en el tamaño total */
         }
-
- 
-        button {
-            color: white;
-            text-decoration: none;
-            font-size: 25px;
-            border: none;
-            background: none;
-            font-weight: 600;
+        
+        .btn {
             font-family: 'Outfit', sans-serif;
+            padding: 1.1em 2em;
+            background: none;
+            border: 2px solid #DDD;
+            font-size: 15px;
+            color: #f22331;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            border-radius: 12px;
+            background-color: #ffffff;
+            font-weight: bolder;
+            box-shadow: 0 2px 0 2px #DDD;
         }
 
-        button::before {
-            margin-left: auto;
+        .btn:before {
+            font-family: 'Outfit', sans-serif;
+            content: "";
+            position: absolute;
+            width: 130px;
+            height: 100%;
+            background-color: #f22331;
+            top: 50%;
+            transform: skewX(30deg) translate(-150%, -50%);
+            transition: all 0.7s;
+            border-radius: 5px;
         }
 
-        button::after, button::before {
-            content: '';
-            width: 0%;
-            height: 2px;
-            background:#f22331;
-            display: block;
-            transition: 0.1s;
+        .btn:hover {
+            font-family: 'Outfit', sans-serif;
+            background-color: #ffffff;
+            color: #0000b3;
+            box-shadow: 0 2px 0 2px #ddd;
         }
 
-        button:hover::after, button:hover::before {
-            width: 100%;
+        .btn:hover::before {
+            transform: skewX(30deg) translate(150%, -50%);
+            transition-delay: 0.1s;
         }
 
+        .btn:active {
+            transform: scale(0.9);
+        }
       
         #map {
             height: 350px;
@@ -192,7 +209,10 @@
             <label for="longitude">Longitud (Utiliza punto):</label>
             <input type="number" id="longitude" placeholder="Longitud en Colombia" step="0.0001">
 
-            <button id="search">BUSCAR PLANTAS</button>
+            
+            <button class="btn" id="search"> BUSCAR PLANTAS
+            </button>
+
         </div>
                
 
@@ -456,7 +476,7 @@
                 maxZoom: 20,
             }).addTo(map);
         
-            agregarMarcadorTexto(latitud, longitud, "🏗️", "¡Aquí estas!");
+            agregarMarcadorTexto(latitud, longitud, "👷", "Tu ubicación");
         
             // Contenedores de las listas
             const lista = document.getElementById("plant-list");
