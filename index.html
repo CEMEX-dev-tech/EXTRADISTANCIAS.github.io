@@ -52,6 +52,14 @@
             color: #0000b3;
             
         }
+        h2 {
+            font-size: 12px;            
+            color: rgba(0, 0, 179, 0.5); /* Azul con 50% de transparencia */
+            font-style: italic;
+            margin-top: 5px;
+            margin-bottom: 20px;
+           
+        }
 
 
         @keyframes pulse-shadow {
@@ -231,92 +239,15 @@
      
     <div id="app">
     
-        
-        <div class="section-banner">
-        <div id="star-1">
-            <div class="curved-corner-star">
-            <div id="curved-corner-bottomright"></div>
-            <div id="curved-corner-bottomleft"></div>
-            </div>
-            <div class="curved-corner-star">
-            <div id="curved-corner-topright"></div>
-            <div id="curved-corner-topleft"></div>
-            </div>
-        </div>
-
-        <div id="star-2">
-            <div class="curved-corner-star">
-            <div id="curved-corner-bottomright"></div>
-            <div id="curved-corner-bottomleft"></div>
-            </div>
-            <div class="curved-corner-star">
-            <div id="curved-corner-topright"></div>
-            <div id="curved-corner-topleft"></div>
-            </div>
-        </div>
-
-        <div id="star-3">
-            <div class="curved-corner-star">
-            <div id="curved-corner-bottomright"></div>
-            <div id="curved-corner-bottomleft"></div>
-            </div>
-            <div class="curved-corner-star">
-            <div id="curved-corner-topright"></div>
-            <div id="curved-corner-topleft"></div>
-            </div>
-        </div>
-
-        <div id="star-4">
-            <div class="curved-corner-star">
-            <div id="curved-corner-bottomright"></div>
-            <div id="curved-corner-bottomleft"></div>
-            </div>
-            <div class="curved-corner-star">
-            <div id="curved-corner-topright"></div>
-            <div id="curved-corner-topleft"></div>
-            </div>
-        </div>
-
-        <div id="star-5">
-            <div class="curved-corner-star">
-            <div id="curved-corner-bottomright"></div>
-            <div id="curved-corner-bottomleft"></div>
-            </div>
-            <div class="curved-corner-star">
-            <div id="curved-corner-topright"></div>
-            <div id="curved-corner-topleft"></div>
-            </div>
-        </div>
-
-        <div id="star-6">
-            <div class="curved-corner-star">
-            <div id="curved-corner-bottomright"></div>
-            <div id="curved-corner-bottomleft"></div>
-            </div>
-            <div class="curved-corner-star">
-            <div id="curved-corner-topright"></div>
-            <div id="curved-corner-topleft"></div>
-            </div>
-        </div>
-
-        <div id="star-7">
-            <div class="curved-corner-star">
-            <div id="curved-corner-bottomright"></div>
-            <div id="curved-corner-bottomleft"></div>
-            </div>
-            <div class="curved-corner-star">
-            <div id="curved-corner-topright"></div>
-            <div id="curved-corner-topleft"></div>
-            </div>
-        </div>
-        </div>
         <div class ="cemex_logo">
             <img src="cemexlogo.png" alt="Logo de Cemex">
         </div>
 
         <h1>EXTRADISTANCIAS</h1>
+        
 
         <div class="form-container">
+            <h2>La latitud y la longitud, se sacan de GoogleMaps (click derecho copiar)</h2>
             <label for="latitude">Latitud (Utiliza punto):</label>
             <input type="number" id="latitude" placeholder="Latitud en Colombia" step="0.0001">
 
@@ -328,7 +259,7 @@
             </button>
 
         </div>
-
+        
         <div class="form-container2">
             <label for="latitude">Tu ubicación: 🏗️</label>            
             <label for="longitude">Jugadores: 🔵</label>
