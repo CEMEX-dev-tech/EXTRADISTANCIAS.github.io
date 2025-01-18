@@ -115,8 +115,58 @@
             align-items: center; /* Centra verticalmente */
             font-family: 'Outfit', sans-serif;
         }
+        .form-container3 {
+            position: relative;
+            width:100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            padding: 20px;
+            flex-direction: row; /* Elementos en fila */
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center; /* Centra verticalmente */
+            font-family: 'Outfit', sans-serif;
+        }
 
+        .dropdown-button {
+            background-color: #ffffff; /* Fondo del botón */
+            color: #0000b3; /* Color del texto */
+            padding: 10px 20px;
+            border: 2px solid #0000b3;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+        }
 
+        .dropdown-button:hover {
+            background-color: #0000b3;
+            color: #ffffff;
+        }
+
+        .dropdown-content {
+            display: none; /* Oculta el contenido inicialmente */
+            position: absolute;
+            background-color: rgba(255, 255, 255);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 12px;
+            width: 100%;            
+            text-align: center;
+            z-index: 1;
+	    max-width: 380px;
+        }
+
+        .dropdown-content h5 {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+
+        .form-container3:hover .dropdown-content {
+            display: block; /* Muestra el contenido al pasar el mouse */
+        }
 
         label {
             font-weight: 600;
@@ -181,6 +231,7 @@
         .btn:active {
             transform: scale(0.9);
         }
+
       
         #map {
             height: 350px;
@@ -273,9 +324,28 @@
             <h5>| Jugadores:🔵  </h5>
             <h5>| Cemex:📌</h5>
            
-        </div>               
+        </div>  
+	
+    	<div id="map"></div>
 
-        <div id="map"></div>
+	<div class="form-container3">
+    	   <button class="dropdown-button">ZONAS Y COLORES</button>
+    	   <div class="dropdown-content">
+        	<h5><span style="color: #00ff00;">ZONA 0- 0 a 5 km</h5>
+        	<h5><span style="color: #7fff00;">ZONA 1- 5 a 10 km</h5>
+        	<h5><span style="color: #ffff00;">ZONA 2- 10 a 15 km</h5>
+        	<h5><span style="color: #ffbf00;">ZONA 3- 15 a 20 km</h5>
+        	<h5><span style="color: #ff8000;">ZONA 4- 20 a 25 km</h5>
+        	<h5><span style="color: #ff4000;">ZONA 5- 25 a 30 km</h5>
+        	<h5><span style="color: #ff0000;">ZONA 6- 30 a 35 km</h5>
+        	<h5><span style="color: #a0a0a0;">ZONA 7- 35 a 40 km</h5>
+        	<h5><span style="color: #808080;">ZONA 8- 40 a 45 km</h5>
+        	<h5><span style="color: #404040;">ZONA 9- 45 a 50 km</h5>
+        	<h5><span style="color: #202020;">ZONA 10- Más de 50 km</h5>
+    	   </div>
+	</div>
+
+
 
         <div id="results">
             <h3>PLANTAS MÁS CERCANAS</h3>
@@ -474,7 +544,21 @@
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c; 
         }
-        
+
+	const zonasColores = [
+            { radio: 5000, color: '#00ff00', zona: 'Zona 0' },
+            { radio: 10000, color: '#7fff00', zona: 'Zona 1' },
+            { radio: 15000, color: '#ffff00', zona: 'Zona 2' },
+            { radio: 20000, color: '#ffbf00', zona: 'Zona 3' },
+            { radio: 25000, color: '#ff8000', zona: 'Zona 4' },
+            { radio: 30000, color: '#ff4000', zona: 'Zona 5' },
+            { radio: 35000, color: '#ff0000', zona: 'Zona 6' },
+            { radio: 40000, color: '#a0a0a0', zona: 'Zona 7' },
+            { radio: 45000, color: '#808080', zona: 'Zona 8' },
+            { radio: 50000, color: '#404040', zona: 'Zona 9' },
+            { radio: 55000, color: '#202020', zona: 'Zona 10' }
+        ];
+
         function calcularZona(distancia) {
             if (distancia <= 5) return "Zona 0";
             else if (distancia > 5 && distancia <= 10) return "Zona 1";
@@ -505,6 +589,19 @@
             })
             .addTo(map)
             .bindPopup(texto);
+        }
+
+        function agregarCirculos(lat, lon) {
+            zonasColores.forEach(zona => {
+                const distancia = zona.radio / 1000; // Convertir radio a kilómetros
+                const zonaCalculada = calcularZona(distancia); // Obtener zona según distancia
+                L.circle([lat, lon], {
+                    color: zona.color,
+                    fillColor: zona.color,
+                    fillOpacity: 0.1,
+                    radius: zona.radio
+                }).addTo(map);
+            });
         }
 
         document.getElementById("search").addEventListener("click", () => {
@@ -607,6 +704,17 @@
                         `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`
                     );
                 });
+
+            agregarCirculos(latitud, longitud);
+            L.marker([latitud, longitud], {
+                icon: L.divIcon({
+                    className: "custom-icon",
+                    html: "<span>🏗️</span>",
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12],
+                }),
+            }).addTo(map).bindPopup("Tu ubicación");
+       
         });
 
 
