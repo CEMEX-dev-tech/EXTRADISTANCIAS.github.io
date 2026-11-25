@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌍EXTRADISTANCIAS🌍</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<style>
         body {
             font-family: 'Outfit', sans-serif;
             margin: 0;
@@ -233,16 +233,18 @@
         }
 
       
-        #map {
-            height: 350px;
-            width: 90%;
-            max-width: 400px;
-            margin: 20px 20px;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 2px;
-            
+        #map-container {
+            height: 520px;
+            width: min(96%, 1100px);
+            margin: 12px auto 24px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #d5dce5;
+            box-shadow: 0 5px 18px rgba(0,0,0,.14);
+            z-index: 1;
         }
+        .leaflet-popup-content { font-family: Outfit, sans-serif; font-size: 13px; }
+        @media (max-width: 600px) { #map-container { height: 430px; width: 96%; } }
 
         #results {
             background: rgba(255, 255, 255, 0.2); /* Fondo blanco con transparencia */
@@ -306,7 +308,7 @@
         
 
         <div class="form-container">
-            <h2>La latitud y la longitud, se sacan de GoogleMaps (clic derecho, copiar)</h2>
+            <h2>Ingresa las coordenadas de Google Maps (clic derecho sobre el punto y copiar coordenadas)</h2>
             <label for="latitude">Latitud (Utiliza punto):</label>
             <input type="number" id="latitude" placeholder="Latitud en Colombia" step="0.0001">
 
@@ -326,7 +328,7 @@
            
         </div>  
 	
-    	<div id="map"></div>
+    	<div id="map-container" aria-label="Mapa interactivo de OpenStreetMap"></div>
 
 	<div class="form-container3">
     	   <button class="dropdown-button">ZONAS Y COLORES</button>
@@ -360,9 +362,8 @@
         <div>
             <h4>CEMEX COLOMBIA S.A ®</h4>
         </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
         const plantas = [
             { nombre: "CEMEX-240", pais: "Colombia", latitud: 4.816855059, longitud: -74.03627429 },
             { nombre: "CEMEX-TOCANCIPA", pais: "Colombia", latitud: 4.952157274, longitud: -73.94257531 },
@@ -573,149 +574,170 @@
             else return "Zona 10";
         }
         
-        const map = L.map("map").setView([4.0, -74.0], 6);
-        L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
-            maxZoom: 20,
-        }).addTo(map);
 
-        function agregarMarcadorTexto(lat, lon, icono, texto) {
-            L.marker([lat, lon], {
-                icon: L.divIcon({
-                    className: "custom-icon",
-                    html: `<span>${icono}</span>`,
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12],
-                }),
-            })
-            .addTo(map)
-            .bindPopup(texto);
-        }
+        // MAPA INTERACTIVO CON LEAFLET + OPENSTREETMAP (sin API key).
+        let map;
+        let mapContainer = document.getElementById("map-container");
+        let mapInitialized = false;
+        let mapLayers = [];
 
-        function agregarCirculos(lat, lon) {
-            zonasColores.forEach(zona => {
-                const distancia = zona.radio / 1000; // Convertir radio a kilómetros
-                const zonaCalculada = calcularZona(distancia); // Obtener zona según distancia
-                L.circle([lat, lon], {
-                    color: zona.color,
-                    fillColor: zona.color,
-                    fillOpacity: 0.1,
-                    radius: zona.radio
+        function initializeMap() {
+            if (!mapInitialized) {
+                map = L.map('map-container').setView([0, 0], 2);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
                 }).addTo(map);
-            });
+                L.control.scale({ metric: true, imperial: false }).addTo(map);
+                mapInitialized = true;
+            }
         }
+
+        function clearMapLayers() {
+            mapLayers.forEach(layer => map.removeLayer(layer));
+            mapLayers = [];
+        }
+
+        function addMapLayer(layer) {
+            layer.addTo(map);
+            mapLayers.push(layer);
+            return layer;
+        }
+
+        function drawLeafletMap(centerLat, centerLon, selectedPlants = [], showZones = false) {
+            initializeMap();
+            clearMapLayers();
+
+            const center = [centerLat, centerLon];
+
+            // Zonas de distancia: círculos concéntricos de 5 a 50 km.
+            if (showZones) {
+                const zoneColors = [
+                    '#00b83f', '#78bd00', '#e3d000', '#f0a000', '#ed7800',
+                    '#e64b25', '#d92727', '#929292', '#696969', '#343434'
+                ];
+                for (let km = 50; km >= 5; km -= 5) {
+                    const index = (km / 5) - 1;
+                    addMapLayer(L.circle(center, {
+                        radius: km * 1000,
+                        color: zoneColors[index],
+                        weight: 2,
+                        opacity: 0.8,
+                        fillColor: zoneColors[index],
+                        fillOpacity: 0.035,
+                        interactive: false
+                    }));
+                }
+            }
+
+            // Marcador de la ubicación consultada.
+            const userMarker = L.marker(center, { title: 'Tu ubicación' })
+                .bindPopup(`<strong>🏗️ Tu ubicación</strong><br>Latitud: ${centerLat.toFixed(6)}<br>Longitud: ${centerLon.toFixed(6)}`);
+            addMapLayer(userMarker);
+
+            // Marcadores para las plantas del Top 3 general y Top 3 CEMEX.
+            selectedPlants.forEach(planta => {
+                const isCemex = planta.nombre.toUpperCase().startsWith("CEMEX");
+                const markerColor = isCemex ? "#e1262f" : "#1646a0";
+                const icon = L.divIcon({
+                    className: "plant-marker-wrapper",
+                    html: `<div style="width:15px;height:15px;border-radius:50%;background:${markerColor};border:2px solid #fff;box-shadow:0 1px 5px #333"></div>`,
+                    iconSize: [19, 19],
+                    iconAnchor: [9, 9]
+                });
+                const marker = L.marker([planta.latitud, planta.longitud], {
+                    icon,
+                    title: planta.nombre
+                }).bindPopup(
+                    `<strong>${planta.nombre}</strong><br>` +
+                    `Distancia: ${planta.distancia.toFixed(2)} km<br>` +
+                    `${planta.zona}<br>` +
+                    `Latitud: ${planta.latitud}<br>Longitud: ${planta.longitud}`
+                );
+                addMapLayer(marker);
+            });
+
+            // Mantiene la ubicación consultada como centro y muestra el radio de 50 km.
+            map.setView(center, showZones ? 9 : 6);
+            setTimeout(() => map.invalidateSize(), 100);
+        }
+
+        // Inicializa el mapa sobre Colombia; al buscar se centra en las coordenadas ingresadas.
+        initializeMap();
+        map.setView([4.7, -74.1], 6);
+        setTimeout(() => map.invalidateSize(), 150);
 
         document.getElementById("search").addEventListener("click", () => {
             let latitud = parseFloat(document.getElementById("latitude").value);
             let longitud = parseFloat(document.getElementById("longitude").value);
-        
-            // Asegura que la latitud sea positiva
+
+            // Mantiene la normalización de coordenadas del código original.
             if (latitud < 0) {
                 latitud = Math.abs(latitud);
-                document.getElementById("latitude").value = latitud; // Actualiza el valor mostrado al usuario
+                document.getElementById("latitude").value = latitud;
             }
-        
-            // Asegura que la longitud sea negativa
             if (longitud > 0) {
                 longitud = -longitud;
-                document.getElementById("longitude").value = longitud; // Actualiza el valor mostrado al usuario
+                document.getElementById("longitude").value = longitud;
             }
-        
+
             if (isNaN(latitud) || isNaN(longitud)) {
                 alert("Por favor, ingresa coordenadas válidas.");
                 return;
             }
-        
-            map.setView([latitud, longitud], 8);
-            map.eachLayer((layer) => {
-                if (!layer._url) map.removeLayer(layer);
-            });
-        
-            L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
-                maxZoom: 20,
-            }).addTo(map);
-        
-            agregarMarcadorTexto(latitud, longitud, "🏗️", "Tu ubicación");
-        
-            // Contenedores de las listas
+
             const lista = document.getElementById("plant-list");
             const cemexLista = document.getElementById("cemex-plant-list");
-        
             lista.innerHTML = "";
             cemexLista.innerHTML = "";
-        
-            // Procesar todas las plantas
+
             const plantasConDistancia = plantas.map(planta => ({
                 ...planta,
                 distancia: calcularDistancia(latitud, longitud, planta.latitud, planta.longitud),
                 zona: calcularZona(calcularDistancia(latitud, longitud, planta.latitud, planta.longitud))
             }));
-        
-            // Ordenar por distancia
+
             const plantasOrdenadas = plantasConDistancia.sort((a, b) => a.distancia - b.distancia);
-        
-            // Mostrar Top 3 general
-            plantasOrdenadas.slice(0, 3).forEach(planta => {
+            const top3General = plantasOrdenadas.slice(0, 3);
+            const top3Cemex = plantasOrdenadas
+                .filter(planta => planta.nombre.startsWith("CEMEX"))
+                .slice(0, 3);
+
+            // Mostrar Top 3 general.
+            top3General.forEach(planta => {
                 const item = document.createElement("li");
                 item.textContent = `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`;
-        
-                if (planta.nombre.startsWith("CEMEX")) {
-                    item.style.backgroundColor = "#f22331"; // Rojo para CEMEX
-                } else {
-                    item.style.backgroundColor = "#0000b3"; // Azul para otras
-                }
-        
+                item.style.backgroundColor = planta.nombre.startsWith("CEMEX") ? "#f22331" : "#0000b3";
                 item.style.color = "white";
                 item.style.borderRadius = "8px";
                 item.style.padding = "5px 10px";
                 item.style.marginBottom = "10px";
                 item.style.textAlign = "left";
-                item.style.fontSize= "14px";
+                item.style.fontSize = "14px";
                 lista.appendChild(item);
-        
-                const icono = planta.nombre.startsWith("CEMEX") ? "📌" : "🔵";
-                agregarMarcadorTexto(
-                    planta.latitud,
-                    planta.longitud,
-                    icono,
-                    `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`
-                );
             });
-        
-            // Filtrar y mostrar Top 3 de CEMEX
-            plantasOrdenadas
-                .filter(planta => planta.nombre.startsWith("CEMEX")) // Solo plantas de CEMEX
-                .slice(0, 3)
-                .forEach(planta => {
-                    const item = document.createElement("li");
-                    item.textContent = `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`;
-                    item.style.backgroundColor = "#f22331"; // Rojo para CEMEX
-                    item.style.color = "white";
-                    item.style.borderRadius = "8px";
-                    item.style.padding = "5px 10px";
-                    item.style.marginBottom = "10px";
-                    item.style.textAlign = "left";
-                    item.style.fontSize= "14px";
-                    cemexLista.appendChild(item);
-        
-                    agregarMarcadorTexto(
-                        planta.latitud,
-                        planta.longitud,
-                        "📌",
-                        `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`
-                    );
-                });
 
-            agregarCirculos(latitud, longitud);
-            L.marker([latitud, longitud], {
-                icon: L.divIcon({
-                    className: "custom-icon",
-                    html: "<span>🏗️</span>",
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12],
-                }),
-            }).addTo(map).bindPopup("Tu ubicación");
-       
+            // Mostrar Top 3 exclusivo de CEMEX.
+            top3Cemex.forEach(planta => {
+                const item = document.createElement("li");
+                item.textContent = `${planta.nombre.replace(/-/g, ' ')} Distancia: ${planta.distancia.toFixed(2)} km - ${planta.zona} 🌍 (Latitud: ${planta.latitud}, Longitud: ${planta.longitud})`;
+                item.style.backgroundColor = "#f22331";
+                item.style.color = "white";
+                item.style.borderRadius = "8px";
+                item.style.padding = "5px 10px";
+                item.style.marginBottom = "10px";
+                item.style.textAlign = "left";
+                item.style.fontSize = "14px";
+                cemexLista.appendChild(item);
+            });
+
+            // Evita duplicar puntos si una planta aparece en ambas listas.
+            const mapPlants = [...new Map([...top3General, ...top3Cemex].map(p => [p.nombre, p])).values()];
+            lastMapView = { latitud, longitud, plants: mapPlants };
+            drawLeafletMap(latitud, longitud, mapPlants, true);
         });
+
+
 
 
     </script>
